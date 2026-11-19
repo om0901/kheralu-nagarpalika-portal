@@ -904,13 +904,7 @@
             resultCard.scrollIntoView({ behavior: 'smooth' });
         } catch (err) {
             console.error(err);
-            if (err.message && (err.message.includes("PDF") || err.message.includes("કન્વર્ઝન"))) {
-                if (confirm(err.message + "\n\nશું તમે Word (.docx) ફાઇલ ડાઉનલોડ કરવા માંગો છો?")) {
-                    await downloadSingleDocx();
-                }
-            } else {
-                alert("ભૂલ: " + err.message);
-            }
+            alert("ભૂલ: " + err.message);
         } finally {
             generateBtn.disabled = false;
             generateBtn.innerHTML = originalText;
@@ -973,13 +967,7 @@
             resultCard.scrollIntoView({ behavior: 'smooth' });
         } catch (err) {
             console.error(err);
-            if (err.message && (err.message.includes("PDF") || err.message.includes("કન્વર્ઝન"))) {
-                if (confirm(err.message + "\n\nશું તમે કમ્બાઈન્ડ Word (.docx) ફાઇલ ડાઉનલોડ કરવા માંગો છો?")) {
-                    await downloadBatchDocx();
-                }
-            } else {
-                alert("ભૂલ: " + err.message);
-            }
+            alert("ભૂલ: " + err.message);
         } finally {
             pdfBtn.disabled = false;
             pdfBtn.innerHTML = originalText;

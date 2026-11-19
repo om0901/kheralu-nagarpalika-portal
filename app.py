@@ -78,20 +78,13 @@ def generate_single_doc():
             )
         else:
             stream = generate_pdf_bytes(data)
-            if stream:
-                filename = f"{base_name}.pdf"
-                return send_file(
-                    stream,
-                    as_attachment=True,
-                    download_name=filename,
-                    mimetype="application/pdf"
-                )
-            else:
-                return jsonify({
-                    "status": "error",
-                    "error_code": "PDF_UNAVAILABLE",
-                    "message": "આ ક્લાઉડ સર્વર પર સીધું PDF ઉપલબ્ધ નથી. કૃપા કરીને Word (.docx) ફોર્મેટ ડાઉનલોડ કરો."
-                }), 422
+            filename = f"{base_name}.pdf"
+            return send_file(
+                stream,
+                as_attachment=True,
+                download_name=filename,
+                mimetype="application/pdf"
+            )
     except Exception as e:
         print(f"Error generating single document: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -124,20 +117,13 @@ def generate_batch_docs():
             )
         else:
             stream = generate_batch_pdf_bytes(batch_list)
-            if stream:
-                filename = f"{base_name}.pdf"
-                return send_file(
-                    stream,
-                    as_attachment=True,
-                    download_name=filename,
-                    mimetype="application/pdf"
-                )
-            else:
-                return jsonify({
-                    "status": "error",
-                    "error_code": "PDF_UNAVAILABLE",
-                    "message": "આ ક્લાઉડ સર્વર પર સીધું PDF ઉપલબ્ધ નથી. કૃપા કરીને કમ્બાઈન્ડ Word (.docx) ફાઇલ ડાઉનલોડ કરો."
-                }), 422
+            filename = f"{base_name}.pdf"
+            return send_file(
+                stream,
+                as_attachment=True,
+                download_name=filename,
+                mimetype="application/pdf"
+            )
     except Exception as e:
         print(f"Error generating batch document: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
