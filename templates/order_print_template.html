@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <title>Birth Registration Correction Order</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 10mm 15mm 10mm 15mm;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nirmala UI', 'Shruti', 'Hind Vadodara', 'Noto Sans Gujarati', 'Gujarati Mohini', 'Arial Unicode MS', sans-serif;
+            color: #000000;
+            font-size: 13.5px;
+            line-height: 1.35;
+            background: #ffffff;
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            height: 272mm;
+            box-sizing: border-box;
+        }
+
+        .page-1 {
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+
+        .page-2 {
+            page-break-before: always;
+            page-break-inside: avoid;
+        }
+
+        .top-marker {
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .header-right {
+            text-align: right;
+            font-weight: 700;
+            font-size: 13.5px;
+            margin-bottom: 8px;
+        }
+
+        .header-left {
+            text-align: left;
+            font-weight: 700;
+            font-size: 13.5px;
+            margin-bottom: 8px;
+        }
+
+        .salutation {
+            font-weight: 700;
+            text-decoration: underline;
+            font-size: 14.5px;
+            margin: 6px 0 4px 0;
+        }
+
+        .section-title {
+            font-weight: 700;
+            text-decoration: underline;
+            font-size: 14.5px;
+            margin: 6px 0 4px 0;
+        }
+
+        .para-body {
+            text-indent: 35px;
+            text-align: justify;
+            font-size: 13px;
+            margin-bottom: 10px;
+            line-height: 1.38;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+            margin-bottom: 6px;
+        }
+
+        table.data-table th, table.data-table td {
+            border: 1px solid #000000;
+            padding: 4px 6px;
+            text-align: center;
+            font-size: 12.5px;
+        }
+
+        table.data-table th {
+            background-color: #f8fafc;
+            font-weight: 700;
+        }
+
+        /* EXACT MARGIN INSTRUCTION: Explicit 100px margin-top above signature box */
+        .signature-box {
+            margin-top: 100px !important; /* Exact gap between table bottom and signature */
+            float: right;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13.5px;
+            line-height: 1.3;
+        }
+
+        /* Footer at absolute bottom of page 1 */
+        .page-1-footer-tag {
+            position: absolute;
+            bottom: 0mm;
+            right: 0mm;
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .preamble-list {
+            margin-left: 0;
+            margin-bottom: 8px;
+            list-style: none;
+        }
+
+        .preamble-list li {
+            font-size: 12.5px;
+            margin-bottom: 2.5px;
+            line-height: 1.3;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= PAGE 1 ================= -->
+    <div class="page-container page-1">
+        <div class="top-marker">(૧)</div>
+        
+        <div class="header-right">
+            જન્મ-મરણ શાખા<br>
+            ખેરાલુ નગરપાલિકા<br>
+            તા. {{ today_date }}
+        </div>
+
+        <div class="salutation">સાદરરજુ,</div>
+
+        <div class="para-body">
+            જન્મ-મરણ નોધણી અધિનિયમ, ૧૯૬૯ ની કલમ(૧૫) અને ગુજરાત જન્મ અને મરણ નોધણી નિયમો ૨૦૦૪ ના નિયમ(૧૧) તથા મુખ્ય રજીસ્ટ્રાર (જન્મ-મરણ) અને કમિશ્નર શ્રી (આરોગ્ય), ગાંધીનગરના તારીખ-૨૫/૦૯/૨૦૨૪નો પરિપત્ર મુજબ અરજદારશ્રી દ્વારા જન્મની નોંધમાં સુધારો કરવા અરજી કરેલ છે. અરજદારે અરજીસાથે સામેલ રાખેલ સાધનિક પુરાવા જેવાકે L.C. આધારકાર્ડ, રેશનકાર્ડ, ચુંટણીકાર્ડ, સોગંદનામુ, ડોકટરનું પ્રમાણપત્ર, અસલજન્મ પ્રમાણપત્ર, વિગેરે જોતા નીચેની વિગતે જન્મ નીનોંધ માં સુધારો કરવાપાત્ર છે.
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 7%;">અ.નં</th>
+                    <th style="width: 53%;" colspan="2">રજીસ્ટરમા નોધાયેલ વિગત</th>
+                    <th style="width: 40%;">જન્મનોંધમાં સુધારો કરવાપત્ર વિગત</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td style="font-weight: bold; width: 26%;">નોંધણી ક્રમાંક</td>
+                    <td style="width: 27%;">{{ reg_no }}</td>
+                    <td>-------------------</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td style="font-weight: bold;">જન્મ તારીખ</td>
+                    <td>{{ dob }}</td>
+                    <td>-------------------</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td style="font-weight: bold;">નોંધણી તારીખ</td>
+                    <td>{{ reg_date }}</td>
+                    <td>-------------------</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td style="font-weight: bold;">બાળકનુ નામ<br>(ભાઈ,કુમાર,બેન)</td>
+                    <td>{{ child_name }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_child_name != '-------------------' else '' }}">{{ corr_child_name }}</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td style="font-weight: bold;">પિતાનુ નામ</td>
+                    <td>{{ father_name }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_father_name != '-------------------' else '' }}">{{ corr_father_name }}</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td style="font-weight: bold;">અટક</td>
+                    <td>{{ surname }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_surname != '-------------------' else '' }}">{{ corr_surname }}</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td style="font-weight: bold;">માતાનુ નામ</td>
+                    <td>{{ mother_name }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_mother_name != '-------------------' else '' }}">{{ corr_mother_name }}</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td style="font-weight: bold;">સરનામુ</td>
+                    <td>{{ address }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_address != '-------------------' else '' }}">{{ corr_address }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Signature Box Page 1 with exact margin-top: 100px !important -->
+        <div class="signature-box">
+            ક્લાર્ક<br>
+            જન્મ-મરણ
+        </div>
+        <div class="clear"></div>
+
+        <!-- Footer at absolute bottom of page 1 -->
+        <div class="page-1-footer-tag">(પાછળ) પાનં -૨</div>
+    </div>
+
+    <!-- ================= PAGE 2 ================= -->
+    <div class="page-container page-2">
+        <div class="top-marker">(૨)</div>
+
+        <div class="header-left">
+            ખેરાલુ નગરપાલિકા<br>
+            જા.નં.<br>
+            તા. 
+        </div>
+
+        <div class="section-title">વંચાણે લીધુ.</div>
+
+        <ul class="preamble-list">
+            <li>1. અરજદાર શ્રી {{ applicant_name }} રહે. {{ applicant_address }} તા. {{ application_date }} ની અરજી તથા રજુકરેલ પુરાવા</li>
+            <li>2. જન્મ-મરણ નોંધણી અધિનીયમ ૧૯૬૯ની કલમ-૧૫</li>
+            <li>3. ગુજરાત જન્મ-મરણ નોધણીનિયમો ૨૦૦૪ ના નિયમ-૧૧ તથા મુખ્ય રજીસ્ટ્રાર (જન્મ-મરણ) અને કમિશ્નર શ્રી (આરોગ્ય), ગાંધીનગરના તારીખ-૨૫/૦૯/૨૦૨૪નો પરિપત્ર</li>
+            <li>4. રજીસ્ટાર શ્રી (જન્મ-મરણ) અને ચીફ ઓફીસર શ્રી ખેરાલુ નગરપાલિકા કચેરી હુંકમ નં.૨૧૬૬/૨૪-૨૫ તા.૦૫/૧૨/૨૦૨૪</li>
+            <li>5. જન્મ-મરણ શાખાની તા. {{ today_date }} ની નોંધ</li>
+        </ul>
+
+        <div class="section-title">કચેરી હુકમ</div>
+
+        <div class="para-body">
+            વંચાણે લીધેલ આમુખ. ૧ થી અરજદાર શ્રી {{ applicant_name }}, ધ્વારા તા {{ application_date }} ની અરજી તથા સામેલ પુરાવા તેમજ વંચાણે લીધેલ આમુખ ૨ થી ૩ જન્મ-મરણ નોંધણી નિયમોની કલમ થી મળેલ સત્તાનીરૂએ વંચાણે લીધેલ આમુખ ૪ ના ચીફ ઓફીસર શ્રીના કચેરી હુકમ થી મળેલ સત્તાનીરૂએ જન્મ નોંધણી રજીસ્ટર મા નીચેમુજબ અરજદાર ના પુત્ર-પુત્રી/પૌત્ર-પૌત્રી/ભાણા-ભાણી ના જન્મની નોંધમા સુધારો કરવા હુકમ કરું છુ.
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 7%;">અ.નં</th>
+                    <th style="width: 53%;" colspan="2">રજીસ્ટરમા નોધાયેલ વિગત</th>
+                    <th style="width: 40%;">જન્મનોંધમાં સુધારો કરવાપત્ર વિગત</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td style="font-weight: bold; width: 26%;">નોંધણી ક્રમાંક</td>
+                    <td style="width: 27%;">{{ reg_no }}</td>
+                    <td>-------------------</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td style="font-weight: bold;">જન્મ તારીખ</td>
+                    <td>{{ dob }}</td>
+                    <td>-------------------</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td style="font-weight: bold;">નોંધણી તારીખ</td>
+                    <td>{{ reg_date }}</td>
+                    <td>-------------------</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td style="font-weight: bold;">બાળકનુ નામ<br>(ભાઈ,કુમાર,બેન)</td>
+                    <td>{{ child_name }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_child_name != '-------------------' else '' }}">{{ corr_child_name }}</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td style="font-weight: bold;">પિતાનુ નામ</td>
+                    <td>{{ father_name }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_father_name != '-------------------' else '' }}">{{ corr_father_name }}</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td style="font-weight: bold;">અટક</td>
+                    <td>{{ surname }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_surname != '-------------------' else '' }}">{{ corr_surname }}</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td style="font-weight: bold;">માતાનુ નામ</td>
+                    <td>{{ mother_name }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_mother_name != '-------------------' else '' }}">{{ corr_mother_name }}</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td style="font-weight: bold;">સરનામુ</td>
+                    <td>{{ address }}</td>
+                    <td style="{{ 'font-weight: bold;' if corr_address != '-------------------' else '' }}">{{ corr_address }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Signature Box Page 2 with exact margin-top: 100px !important -->
+        <div class="signature-box">
+            સબરજીસ્ટાર<br>
+            જન્મ-મરણ નોધણી<br>
+            ખેરાલુ નગરપાલિકા
+        </div>
+        <div class="clear"></div>
+    </div>
+
+</body>
+</html>

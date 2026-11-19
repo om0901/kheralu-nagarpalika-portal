@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ખેરાલુ નગરપાલિકા - જન્મ નોંધણી સુધારા હુકમ</title>
+    <!-- Include html2pdf library for 100% offline client-side PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a192f;
+            --card-bg: #112240;
+            --card-border: rgba(0, 180, 216, 0.25);
+            --header-gradient: linear-gradient(135deg, #028090 0%, #00a896 50%, #02c39a 100%);
+            --accent-teal: #00b4d8;
+            --accent-mint: #52b788;
+            --accent-gold: #f77f00;
+            --accent-red: #e63946;
+            --accent-blue: #0077b6;
+            --accent-emerald: #2a9d8f;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --input-bg: #172a45;
+            --input-border: rgba(0, 180, 216, 0.3);
+            --input-focus: #64ffda;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nirmala UI', 'Shruti', 'Hind Vadodara', 'Noto Sans Gujarati', 'Gujarati Mohini', 'Arial Unicode MS', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Header Banner with Emerald Teal to Cyan Gradient */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.75rem 1.5rem;
+            background: var(--header-gradient);
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(2, 128, 144, 0.4);
+            color: #ffffff;
+        }
+
+        .logo-emblem {
+            background: #ffffff;
+            color: #028090;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 0 auto 0.75rem auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f1faee;
+        }
+
+        header p {
+            font-size: 0.92rem;
+            color: #e0f2fe;
+            margin-top: 0.4rem;
+        }
+
+        /* Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid-2col { grid-template-columns: repeat(2, 1fr); }
+            .form-grid-3col { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* Section Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-teal);
+            box-shadow: 0 12px 35px rgba(0, 180, 216, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent-teal);
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0, 180, 216, 0.15);
+            padding-bottom: 0.75rem;
+        }
+
+        .card-title-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title .icon {
+            font-size: 1.3rem;
+        }
+
+        /* Form Inputs */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group label .required {
+            color: var(--accent-red);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            color: var(--text-primary);
+            font-size: 0.98rem;
+            font-family: inherit;
+            transition: all 0.25s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.2);
+            background: #1d3557;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* Notice Banner */
+        .notice-box {
+            background: rgba(247, 127, 0, 0.12);
+            border-left: 4px solid var(--accent-gold);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.1rem;
+            font-size: 0.88rem;
+            color: #ffb703;
+        }
+
+        /* Action Buttons */
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.85rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.4rem;
+            font-size: 0.98rem;
+            font-weight: 600;
+            font-family: inherit;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .btn-add-batch {
+            background: linear-gradient(135deg, #f77f00 0%, #d97706 100%);
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(247, 127, 0, 0.35);
+        }
+
+        .btn-add-batch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(247, 127, 0, 0.5);
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(230, 57, 70, 0.35);
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(230, 57, 70, 0.5);
+        }
+
+        .btn-docx {
+            background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(0, 119, 182, 0.35);
+        }
+
+        .btn-docx:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(0, 119, 182, 0.5);
+        }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, #2a9d8f 0%, #1e7168 100%);
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(42, 157, 143, 0.35);
+        }
+
+        .btn-emerald:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(42, 157, 143, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.16);
+            transform: translateY(-2px);
+        }
+
+        .btn-sample {
+            background: rgba(82, 183, 136, 0.18);
+            color: #52b788;
+            border: 1px solid rgba(82, 183, 136, 0.35);
+        }
+
+        .btn-sample:hover {
+            background: rgba(82, 183, 136, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: rgba(230, 57, 70, 0.18);
+            color: #ff758f;
+            border: 1px solid rgba(230, 57, 70, 0.35);
+            padding: 0.4rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-edit {
+            background: rgba(0, 180, 216, 0.18);
+            color: #90e0ef;
+            border: 1px solid rgba(0, 180, 216, 0.35);
+            padding: 0.4rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        /* Counter Badge */
+        .batch-counter-badge {
+            background: linear-gradient(135deg, var(--accent-mint), #2a9d8f);
+            color: #0a192f;
+            font-weight: 700;
+            padding: 0.25rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Batch Table */
+        .batch-table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+        }
+
+        table.batch-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+
+        table.batch-table th, table.batch-table td {
+            padding: 0.75rem 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        table.batch-table th {
+            background: #172a45;
+            color: var(--accent-teal);
+            font-weight: 600;
+        }
+
+        table.batch-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .empty-batch-text {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        /* Result Card */
+        #result-card {
+            display: none;
+            background: rgba(42, 157, 143, 0.15);
+            border: 1px solid rgba(42, 157, 143, 0.4);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #result-card h3 {
+            color: var(--accent-mint);
+            font-size: 1.3rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .download-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo-emblem">🏛️</div>
+        <h1>ખેરાલુ નગરપાલિકા</h1>
+        <h2>જન્મ નોંધણી સુધારા હુકમ (Made By Om Raval and Instructed By Chirag Chaudhari)</h2>
+        <p>જન્મ-મરણ શાખા | જન્મ અને મરણ નોંધણી અધિનિયમ ૧૯૬૯ (કલમ-૧૫)</p>
+    </header>
+
+    <form id="orderForm">
+        <input type="hidden" id="editing_index" value="-1">
+
+        <!-- Section 1 -->
+        <div class="card">
+            <div class="card-title">
+                <div class="card-title-left">
+                    <span class="icon">📋</span> ૧. અરજી અને મેટાડેટા (Application Details)
+                </div>
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="today_date">આજની તારીખ <span class="required">*</span></label>
+                    <input type="text" id="today_date" name="today_date" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+                <div class="form-group">
+                    <label for="application_date">અરજીની તારીખ <span class="required">*</span></label>
+                    <input type="text" id="application_date" name="application_date" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="applicant_name">અરજદારનું નામ <span class="required">*</span></label>
+                    <input type="text" id="applicant_name" name="applicant_name" class="form-control" placeholder="દા.ત. ચૌધરી ચિરાગ જશુભાઇ" required>
+                </div>
+                <div class="form-group">
+                    <label for="applicant_address">અરજદારનું સરનામું <span class="required">*</span></label>
+                    <input type="text" id="applicant_address" name="applicant_address" class="form-control" placeholder="દા.ત. મુ. ખેરાલુ, તા. ખેરાલુ, જી. મહેસાણા" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="card">
+            <div class="card-title">
+                <div class="card-title-left">
+                    <span class="icon">📜</span> ૨. રજીસ્ટરમાં નોંધાયેલ મૂળ વિગતો (Registered Details)
+                </div>
+            </div>
+            <div class="form-grid form-grid-3col">
+                <div class="form-group">
+                    <label for="reg_no">નોંધણી નંબર <span class="required">*</span></label>
+                    <input type="text" id="reg_no" name="reg_no" class="form-control" placeholder="દા.ત. ૮૪૫" required>
+                </div>
+                <div class="form-group">
+                    <label for="dob">જન્મ તારીખ <span class="required">*</span></label>
+                    <input type="text" id="dob" name="dob" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg_date">નોંધણી તારીખ <span class="required">*</span></label>
+                    <input type="text" id="reg_date" name="reg_date" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="child_name">બાળકનું મૂળ નામ <span class="required">*</span></label>
+                    <input type="text" id="child_name" name="child_name" class="form-control" placeholder="બાળકનું રજીસ્ટર્ડ નામ" required>
+                </div>
+                <div class="form-group">
+                    <label for="father_name">પિતાનું મૂળ નામ <span class="required">*</span></label>
+                    <input type="text" id="father_name" name="father_name" class="form-control" placeholder="પિતાનું રજીસ્ટર્ડ નામ" required>
+                </div>
+            </div>
+            <div class="form-grid form-grid-3col">
+                <div class="form-group">
+                    <label for="surname">અટક <span class="required">*</span></label>
+                    <input type="text" id="surname" name="surname" class="form-control" placeholder="રજીસ્ટર્ડ અટક" required>
+                </div>
+                <div class="form-group">
+                    <label for="mother_name">માતાનું મૂળ નામ <span class="required">*</span></label>
+                    <input type="text" id="mother_name" name="mother_name" class="form-control" placeholder="માતાનું રજીસ્ટર્ડ નામ" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">મૂળ સરનામું <span class="required">*</span></label>
+                    <input type="text" id="address" name="address" class="form-control" placeholder="રજીસ્ટર્ડ સરનામું" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="card">
+            <div class="card-title">
+                <div class="card-title-left">
+                    <span class="icon">✏️</span> ૩. જન્મનોંધમાં સુધારો કરવાપત્ર વિગતો (Correction Details)
+                </div>
+            </div>
+            <div class="notice-box">
+                ℹ️ <strong>સુચના:</strong> જે ખાનામાં સુધારો કરવાનો હોય ફક્ત તેજ વિગત લખો. ખાલી છોડેલ ખાનામાં દસ્તાવેજમાં સ્વયં સંચાલિત <strong>-------------------</strong> આવી જશે.
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="corr_child_name">સુધારેલું બાળકનું નામ</label>
+                    <input type="text" id="corr_child_name" name="corr_child_name" class="form-control" placeholder="જો સુધારો હોય તો અહીં લખો">
+                </div>
+                <div class="form-group">
+                    <label for="corr_father_name">સુધારેલું પિતાનું નામ</label>
+                    <input type="text" id="corr_father_name" name="corr_father_name" class="form-control" placeholder="જો સુધારો હોય તો અહીં લખો">
+                </div>
+            </div>
+            <div class="form-grid form-grid-3col">
+                <div class="form-group">
+                    <label for="corr_surname">સુધારેલી અટક</label>
+                    <input type="text" id="corr_surname" name="corr_surname" class="form-control" placeholder="જો સુધારો હોય તો અહીં લખો">
+                </div>
+                <div class="form-group">
+                    <label for="corr_mother_name">સુધારેલું માતાનું નામ</label>
+                    <input type="text" id="corr_mother_name" name="corr_mother_name" class="form-control" placeholder="જો સુધારો હોય તો અહીં લખો">
+                </div>
+                <div class="form-group">
+                    <label for="corr_address">સુધારેલું સરનામું</label>
+                    <input type="text" id="corr_address" name="corr_address" class="form-control" placeholder="જો સુધારો હોય તો અહીં લખો">
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="action-bar">
+            <button type="button" class="btn btn-add-batch" id="addToBatchBtn">
+                ➕ આ અરજી બેચમાં ઉમેરો (Add to Batch)
+            </button>
+            <button type="submit" class="btn btn-pdf" id="generateSingleBtn">
+                📄 સિંગલ PDF હુકમ ડાઉનલોડ
+            </button>
+            <button type="button" class="btn btn-docx" id="generateSingleDocxBtn">
+                📝 સિંગલ Word ડાઉનલોડ
+            </button>
+            <button type="button" class="btn btn-sample" id="sampleBtn">
+                ⚡ નમૂનાની માહિતી ભરો
+            </button>
+            <button type="button" class="btn btn-secondary" id="resetBtn">
+                🔄 ફોર્મ રીસેટ કરો
+            </button>
+        </div>
+    </form>
+
+    <!-- BATCH QUEUE SECTION -->
+    <div class="card" style="margin-top: 2rem;">
+        <div class="card-title">
+            <div class="card-title-left">
+                <span class="icon">📦</span> સંગ્રહિત અરજીઓ ની બેચ (Batch Applications Queue)
+            </div>
+            <div class="batch-counter-badge" id="batchCounter">
+                કુલ સંગ્રહિત અરજીઓ: 0
+            </div>
+        </div>
+
+        <div class="batch-table-container">
+            <table class="batch-table" id="batchTable">
+                <thead>
+                    <tr>
+                        <th style="width: 6%;">#</th>
+                        <th style="width: 25%;">અરજદારનું નામ</th>
+                        <th style="width: 18%;">નોંધણી ક્રમાંક</th>
+                        <th style="width: 22%;">બાળકનું નામ</th>
+                        <th style="width: 15%;">સુધારા કૌન્ટ</th>
+                        <th style="width: 14%; text-align: center;">એક્શન</th>
+                    </tr>
+                </thead>
+                <tbody id="batchTableBody">
+                    <tr>
+                        <td colspan="6" class="empty-batch-text">
+                            અત્યાર સુધી કોઈ અરજી બેચમાં ઉમેરાયેલ નથી. ઉપરના ફોર્મમાં વિગત ભરીને "➕ આ અરજી બેચમાં ઉમેરો" બટન પર ક્લિક કરો.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="action-bar" style="margin-top: 1.25rem;">
+            <button type="button" class="btn btn-pdf" id="generateBatchPdfBtn" style="display: none;">
+                📄 ગ્રાન્ડ કમ્બાઈન્ડ પીડીએફ ડાઉનલોડ (Combined PDF)
+            </button>
+            <button type="button" class="btn btn-emerald" id="generateBatchDocxBtn" style="display: none;">
+                📝 કમ્બાઈન્ડ વર્ડ ડાઉનલોડ (Combined Word)
+            </button>
+            <button type="button" class="btn btn-secondary" id="clearBatchBtn" style="display: none;">
+                🗑️ આખી બેચ ખાલી કરો
+            </button>
+        </div>
+    </div>
+
+    <!-- Download Notification Box -->
+    <div id="result-card">
+        <h3 id="resultTitle">✅ દસ્તાવેજ સફળતાપૂર્વક તૈયાર થઈ ગયો છે!</h3>
+        <p id="resultSubtitle" style="margin-bottom: 1.1rem; color: #cbd5e1;">તમારા દસ્તાવેજને સેવ કરવા માટે નીચેના બટન પર ક્લિક કરો:</p>
+        
+        <div class="download-btn-group">
+            <button type="button" id="pdfDownloadBtn" class="btn btn-pdf">
+                📄 પીડીએફ ડાઉનલોડ કરો (.pdf)
+            </button>
+            <button type="button" id="docxDownloadBtn" class="btn btn-docx">
+                📝 વર્ડ ફાઈલ ડાઉનલોડ કરો (.docx)
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© ખેરાલુ નગરપાલિકા - જન્મ અને મરણ નોંધણી શાખા, ખેરાલુ, જી. મહેસાણા</p>
+    </footer>
+</div>
+
+<script>
+    let batchQueue = [];
+    let currentPdfUrl = "";
+    let currentPdfFilename = "";
+    let currentDocxUrl = "";
+    let currentDocxFilename = "";
+
+    function getTodayFormatted() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('today_date').value = getTodayFormatted();
+        document.getElementById('application_date').value = getTodayFormatted();
+        renderBatchQueue();
+    });
+
+    async function triggerSaveAsDialog(url, defaultFilename) {
+        if (!url || url === '' || url === '#') return;
+
+        if ('showSaveFilePicker' in window) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Fetch error");
+                const blob = await response.blob();
+
+                const isPdf = defaultFilename.toLowerCase().endsWith('.pdf');
+                const mimeType = isPdf ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                const extension = isPdf ? '.pdf' : '.docx';
+
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: defaultFilename,
+                    types: [{
+                        description: isPdf ? 'PDF Document (*.pdf)' : 'Word Document (*.docx)',
+                        accept: { [mimeType]: [extension] }
+                    }]
+                });
+
+                const writable = await handle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                return;
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                console.warn("showSaveFilePicker fallback:", err);
+            }
+        }
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = defaultFilename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    document.getElementById('pdfDownloadBtn').addEventListener('click', () => {
+        triggerSaveAsDialog(currentPdfUrl, currentPdfFilename);
+    });
+
+    document.getElementById('docxDownloadBtn').addEventListener('click', () => {
+        triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
+    });
+
+    function getFormData() {
+        const form = document.getElementById('orderForm');
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((val, key) => data[key] = val.trim());
+        return data;
+    }
+
+    function validateForm(data) {
+        const required = ['today_date', 'application_date', 'applicant_name', 'applicant_address', 'reg_no', 'dob', 'reg_date', 'child_name', 'father_name', 'surname', 'mother_name', 'address'];
+        for (let field of required) {
+            if (!data[field] || data[field] === '') return false;
+        }
+        return true;
+    }
+
+    function renderBatchQueue() {
+        const counter = document.getElementById('batchCounter');
+        const tbody = document.getElementById('batchTableBody');
+        const pdfBtn = document.getElementById('generateBatchPdfBtn');
+        const docxBtn = document.getElementById('generateBatchDocxBtn');
+        const clearBtn = document.getElementById('clearBatchBtn');
+
+        counter.innerHTML = `કુલ સંગ્રહિત અરજીઓ (Total Applications Saved): ${batchQueue.length}`;
+
+        if (batchQueue.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty-batch-text">
+                        અત્યાર સુધી કોઈ અરજી બેચમાં ઉમેરાયેલ નથી. ઉપરના ફોર્મમાં વિગત ભરીને "➕ આ અરજી બેચમાં ઉમેરો" બટન પર ક્લિક કરો.
+                    </td>
+                </tr>
+            `;
+            pdfBtn.style.display = 'none';
+            docxBtn.style.display = 'none';
+            clearBtn.style.display = 'none';
+            return;
+        }
+
+        pdfBtn.style.display = 'inline-flex';
+        docxBtn.style.display = 'inline-flex';
+        clearBtn.style.display = 'inline-flex';
+
+        let html = '';
+        batchQueue.forEach((item, index) => {
+            let corrCount = 0;
+            ['corr_child_name', 'corr_father_name', 'corr_surname', 'corr_mother_name', 'corr_address'].forEach(k => {
+                if (item[k] && item[k] !== '') corrCount++;
+            });
+
+            html += `
+                <tr>
+                    <td style="font-weight: bold;">${index + 1}</td>
+                    <td>${item.applicant_name}</td>
+                    <td><span style="background: rgba(0, 180, 216, 0.2); color: #90e0ef; padding: 2px 6px; border-radius: 4px;">${item.reg_no}</span></td>
+                    <td>${item.child_name}</td>
+                    <td>${corrCount} સુધારા</td>
+                    <td style="text-align: center;">
+                        <button type="button" class="btn btn-edit" onclick="editBatchItem(${index})">✏️ Edit</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteBatchItem(${index})">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    document.getElementById('addToBatchBtn').addEventListener('click', () => {
+        const data = getFormData();
+        if (!validateForm(data)) {
+            alert("કૃપા કરીને તમામ લાલ તારા (*) વાળા ફરજિયાત ખાના ભરો.");
+            return;
+        }
+
+        const editIndex = parseInt(document.getElementById('editing_index').value);
+        if (editIndex >= 0 && editIndex < batchQueue.length) {
+            batchQueue[editIndex] = data;
+            document.getElementById('editing_index').value = "-1";
+            alert(`અરજી #${editIndex + 1} સફળતાપૂર્વક અપડેટ થઈ ગઈ છે!`);
+        } else {
+            batchQueue.push(data);
+            alert(`અરજી #${batchQueue.length} બેચમાં ઉમેરાઈ ગઈ છે!`);
+        }
+
+        renderBatchQueue();
+        const savedToday = document.getElementById('today_date').value;
+        const savedAppDate = document.getElementById('application_date').value;
+        document.getElementById('orderForm').reset();
+        document.getElementById('today_date').value = savedToday || getTodayFormatted();
+        document.getElementById('application_date').value = savedAppDate || getTodayFormatted();
+    });
+
+    window.editBatchItem = function(index) {
+        const item = batchQueue[index];
+        if (!item) return;
+
+        for (let key in item) {
+            const el = document.getElementById(key);
+            if (el) el.value = item[key];
+        }
+
+        document.getElementById('editing_index').value = index;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteBatchItem = function(index) {
+        if (confirm(`શું તમે અરજી #${index + 1} બેચમાંથી કાઢી નાખવા માંગો છો?`)) {
+            batchQueue.splice(index, 1);
+            renderBatchQueue();
+        }
+    };
+
+    document.getElementById('clearBatchBtn').addEventListener('click', () => {
+        if (confirm("શું તમે આખી અરજી બેચ ખાલી કરવા માંગો છો?")) {
+            batchQueue = [];
+            renderBatchQueue();
+        }
+    });
+
+    document.getElementById('sampleBtn').addEventListener('click', () => {
+        document.getElementById('today_date').value = getTodayFormatted();
+        document.getElementById('application_date').value = getTodayFormatted();
+        document.getElementById('applicant_name').value = "રાવલ ઓમ શૈલેષકુમાર";
+        document.getElementById('applicant_address').value = "મુ. ખેરાલુ, તા. ખેરાલુ, જી. મહેસાણા";
+        document.getElementById('reg_no').value = "૮૪૫";
+        document.getElementById('dob').value = "૧૮/૧૦/૨૦૧૫";
+        document.getElementById('reg_date').value = "૨૮/૧૦/૨૦૧૫";
+        document.getElementById('child_name').value = "ઓમ";
+        document.getElementById('father_name').value = "શૈલેષભાઈ";
+        document.getElementById('surname').value = "રાવલ";
+        document.getElementById('mother_name').value = "પુજાબેન";
+        document.getElementById('address').value = "ખેરાલુ";
+        
+        document.getElementById('corr_child_name').value = "ઓમકુમાર";
+        document.getElementById('corr_father_name').value = "શૈલેષકુમાર";
+        document.getElementById('corr_surname').value = "";
+        document.getElementById('corr_mother_name').value = "";
+        document.getElementById('corr_address').value = "";
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        document.getElementById('orderForm').reset();
+        document.getElementById('editing_index').value = "-1";
+        document.getElementById('today_date').value = getTodayFormatted();
+        document.getElementById('application_date').value = getTodayFormatted();
+        document.getElementById('result-card').style.display = 'none';
+    });
+
+    // Single Form Submit (PDF Generation)
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const generateBtn = document.getElementById('generateSingleBtn');
+        const originalText = generateBtn.innerHTML;
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = "⏳ સિંગલ PDF તૈયાર થાય છે...";
+        
+        const data = getFormData();
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                document.getElementById('resultTitle').innerHTML = "✅ સિંગલ હુકમ દસ્તાવેજ સફળતાપૂર્વક તૈયાર થઈ ગયો છે!";
+                document.getElementById('resultSubtitle').innerHTML = "તમારા દસ્તાવેજને સેવ કરવા માટે નીચેના બટન પર ક્લિક કરો:";
+                
+                const resultCard = document.getElementById('result-card');
+                const docxBtn = document.getElementById('docxDownloadBtn');
+                const pdfBtn = document.getElementById('pdfDownloadBtn');
+                
+                currentDocxUrl = result.docx_download_url;
+                currentDocxFilename = result.docx_filename;
+                
+                if (result.pdf_download_url) {
+                    currentPdfUrl = result.pdf_download_url;
+                    currentPdfFilename = result.pdf_filename;
+                    pdfBtn.style.display = 'inline-flex';
+                } else {
+                    currentPdfUrl = "";
+                    currentPdfFilename = "";
+                    pdfBtn.style.display = 'none';
+                }
+                
+                resultCard.style.display = 'block';
+                resultCard.scrollIntoView({ behavior: 'smooth' });
+
+                if (currentPdfUrl) {
+                    triggerSaveAsDialog(currentPdfUrl, currentPdfFilename);
+                } else {
+                    triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
+                }
+            } else {
+                alert("ભૂલ: " + (result.message || "દસ્તાવેજ જનરેટ કરી શકાયો નથી."));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("ક્ષતિ થઈ.");
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = originalText;
+        }
+    });
+
+    // Single Word Download Button Event
+    document.getElementById('generateSingleDocxBtn').addEventListener('click', async () => {
+        const data = getFormData();
+        if (!validateForm(data)) {
+            alert("કૃપા કરીને તમામ લાલ તારા (*) વાળા ફરજિયાત ખાના ભરો.");
+            return;
+        }
+        
+        const generateBtn = document.getElementById('generateSingleDocxBtn');
+        const originalText = generateBtn.innerHTML;
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = "⏳ સિંગલ Word તૈયાર થાય છે...";
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            if (result.status === 'success') {
+                currentDocxUrl = result.docx_download_url;
+                currentDocxFilename = result.docx_filename;
+                
+                const resultCard = document.getElementById('result-card');
+                resultCard.style.display = 'block';
+                resultCard.scrollIntoView({ behavior: 'smooth' });
+                
+                triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("ક્ષતિ થઈ.");
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = originalText;
+        }
+    });
+
+    // Batch PDF Generation
+    document.getElementById('generateBatchPdfBtn').addEventListener('click', async () => {
+        if (batchQueue.length === 0) {
+            alert("બેચમાં કોઈ અરજી નથી.");
+            return;
+        }
+
+        const pdfBtn = document.getElementById('generateBatchPdfBtn');
+        const originalText = pdfBtn.innerHTML;
+        pdfBtn.disabled = true;
+        pdfBtn.innerHTML = "⏳ કમ્બાઈન્ડ PDF મર્જ થઈ રહ્યું છે...";
+
+        try {
+            const response = await fetch('/api/generate_batch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ batch: batchQueue })
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                document.getElementById('resultTitle').innerHTML = `✅ ${result.batch_count} અરજીઓની ગ્રાન્ડ કમ્બાઈન્ડ ફાઈલ તૈયાર થઈ ગઈ છે!`;
+                document.getElementById('resultSubtitle').innerHTML = `કુલ ${result.batch_count} અરજીઓ (${result.batch_count * 2} પાના) સેવ કરવા નીચે બટન દબાવો:`;
+
+                const resultCard = document.getElementById('result-card');
+                const docxBtn = document.getElementById('docxDownloadBtn');
+                const pdfBtnEl = document.getElementById('pdfDownloadBtn');
+
+                currentDocxUrl = result.combined_docx_download_url;
+                currentDocxFilename = result.combined_docx_filename;
+
+                if (result.combined_pdf_download_url) {
+                    currentPdfUrl = result.combined_pdf_download_url;
+                    currentPdfFilename = result.combined_pdf_filename;
+                    pdfBtnEl.style.display = 'inline-flex';
+                    triggerSaveAsDialog(currentPdfUrl, currentPdfFilename);
+                } else {
+                    currentPdfUrl = "";
+                    currentPdfFilename = "";
+                    pdfBtnEl.style.display = 'none';
+                    triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
+                }
+
+                resultCard.style.display = 'block';
+                resultCard.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert("ભૂલ: " + (result.message || "કમ્બાઈન્ડ ફાઈલ જનરેટ કરી શકાઈ નથી."));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("ક્ષતિ થઈ.");
+        } finally {
+            pdfBtn.disabled = false;
+            pdfBtn.innerHTML = originalText;
+        }
+    });
+
+    // Batch Word Generation
+    document.getElementById('generateBatchDocxBtn').addEventListener('click', async () => {
+        if (batchQueue.length === 0) {
+            alert("બેચમાં કોઈ અરજી નથી.");
+            return;
+        }
+
+        const docxBtn = document.getElementById('generateBatchDocxBtn');
+        const originalText = docxBtn.innerHTML;
+        docxBtn.disabled = true;
+        docxBtn.innerHTML = "⏳ કમ્બાઈન્ડ Word મર્જ થઈ રહ્યું છે...";
+
+        try {
+            const response = await fetch('/api/generate_batch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ batch: batchQueue })
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                document.getElementById('resultTitle').innerHTML = `✅ ${result.batch_count} અરજીઓ ની ગ્રાન્ડ કમ્બાઈન્ડ વર્ડ ફાઈલ તૈયાર છે!`;
+                document.getElementById('resultSubtitle').innerHTML = `કુલ ${result.batch_count} અરજીઓ સેવ કરવા માટે નીચેના બટન પર ક્લિક કરો:`;
+
+                const resultCard = document.getElementById('result-card');
+                const docxBtnEl = document.getElementById('docxDownloadBtn');
+                const pdfBtnEl = document.getElementById('pdfDownloadBtn');
+
+                currentDocxUrl = result.combined_docx_download_url;
+                currentDocxFilename = result.combined_docx_filename;
+
+                if (result.combined_pdf_download_url) {
+                    currentPdfUrl = result.combined_pdf_download_url;
+                    currentPdfFilename = result.combined_pdf_filename;
+                    pdfBtnEl.style.display = 'inline-flex';
+                } else {
+                    currentPdfUrl = "";
+                    currentPdfFilename = "";
+                    pdfBtnEl.style.display = 'none';
+                }
+
+                resultCard.style.display = 'block';
+                resultCard.scrollIntoView({ behavior: 'smooth' });
+                triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
+            } else {
+                alert("ભૂલ: " + (result.message || "કમ્બાઈન્ડ વર્ડ ફાઈલ જનરેટ કરી શકાઈ નથી."));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("ક્ષતિ થઈ.");
+        } finally {
+            docxBtn.disabled = false;
+            docxBtn.innerHTML = originalText;
+        }
+    });
+</script>
+
+</body>
+</html>

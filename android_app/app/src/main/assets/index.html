@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ખેરાલુ નગરપાલિકા - જન્મ નોંધણી સુધારા હુકમ (100% Offline Mobile App)</title>
+    <script src="./html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a192f;
+            --card-bg: #112240;
+            --card-border: rgba(0, 180, 216, 0.25);
+            --header-gradient: linear-gradient(135deg, #028090 0%, #00a896 50%, #02c39a 100%);
+            --accent-teal: #00b4d8;
+            --accent-mint: #52b788;
+            --accent-gold: #f77f00;
+            --accent-red: #e63946;
+            --accent-blue: #0077b6;
+            --accent-emerald: #2a9d8f;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --input-bg: #172a45;
+            --input-border: rgba(0, 180, 216, 0.3);
+            --input-focus: #64ffda;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nirmala UI', 'Shruti', 'Hind Vadodara', 'Noto Sans Gujarati', 'Gujarati Mohini', 'Arial Unicode MS', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 1rem 0.5rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            background: var(--header-gradient);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(2, 128, 144, 0.4);
+            color: #ffffff;
+        }
+
+        .logo-emblem {
+            background: #ffffff;
+            color: #028090;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 0.5rem auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        header h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #f1faee;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            color: #e0f2fe;
+            margin-top: 0.2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 600px) {
+            .form-grid-2col { grid-template-columns: repeat(2, 1fr); }
+            .form-grid-3col { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-teal);
+            margin-bottom: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0, 180, 216, 0.15);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .form-group label {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group label .required {
+            color: var(--accent-red);
+        }
+
+        .form-control {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 0.65rem 0.8rem;
+            color: var(--text-primary);
+            font-size: 0.92rem;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            background: #1d3557;
+        }
+
+        .notice-box {
+            background: rgba(247, 127, 0, 0.12);
+            border-left: 3px solid var(--accent-gold);
+            padding: 0.65rem 0.85rem;
+            border-radius: 6px;
+            margin-bottom: 0.9rem;
+            font-size: 0.82rem;
+            color: #ffb703;
+        }
+
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.75rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-add-batch {
+            background: linear-gradient(135deg, #f77f00 0%, #d97706 100%);
+            color: #ffffff;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+            color: #ffffff;
+        }
+
+        .btn-docx {
+            background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+            color: #ffffff;
+        }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, #2a9d8f 0%, #1e7168 100%);
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-sample {
+            background: rgba(82, 183, 136, 0.18);
+            color: #52b788;
+            border: 1px solid rgba(82, 183, 136, 0.35);
+        }
+
+        .btn-danger {
+            background: rgba(230, 57, 70, 0.18);
+            color: #ff758f;
+            border: 1px solid rgba(230, 57, 70, 0.35);
+            padding: 0.35rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-edit {
+            background: rgba(0, 180, 216, 0.18);
+            color: #90e0ef;
+            border: 1px solid rgba(0, 180, 216, 0.35);
+            padding: 0.35rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        .batch-counter-badge {
+            background: linear-gradient(135deg, var(--accent-mint), #2a9d8f);
+            color: #0a192f;
+            font-weight: 700;
+            padding: 0.2rem 0.65rem;
+            border-radius: 16px;
+            font-size: 0.82rem;
+        }
+
+        .batch-table-container {
+            overflow-x: auto;
+            margin-top: 0.85rem;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+
+        table.batch-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        table.batch-table th, table.batch-table td {
+            padding: 0.6rem 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        table.batch-table th {
+            background: #172a45;
+            color: var(--accent-teal);
+        }
+
+        .empty-batch-text {
+            text-align: center;
+            padding: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Hidden Render Area for PDF */
+        #pdf-render-area {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 210mm;
+            background: #ffffff;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo-emblem">🏛️</div>
+        <h1>ખેરાલુ નગરપાલિકા</h1>
+        <h2>જન્મ નોંધણી સુધારા હુકમ (100% Offline Mobile App)</h2>
+        <p>જન્મ-મરણ શાખા | જન્મ અને મરણ નોંધણી અધિનિયમ ૧૯૬૯ (કલમ-૧૫)</p>
+    </header>
+
+    <form id="orderForm">
+        <input type="hidden" id="editing_index" value="-1">
+
+        <div class="card">
+            <div class="card-title">
+                <span>📋 ૧. અરજી અને મેટાડેટા</span>
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="today_date">આજની તારીખ <span class="required">*</span></label>
+                    <input type="text" id="today_date" name="today_date" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+                <div class="form-group">
+                    <label for="application_date">અરજીની તારીખ <span class="required">*</span></label>
+                    <input type="text" id="application_date" name="application_date" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="applicant_name">અરજદારનું નામ <span class="required">*</span></label>
+                    <input type="text" id="applicant_name" name="applicant_name" class="form-control" placeholder="દા.ત. ચૌધરી રમેશભાઈ વિષ્ણુભાઈ" required>
+                </div>
+                <div class="form-group">
+                    <label for="applicant_address">અરજદારનું સરનામું <span class="required">*</span></label>
+                    <input type="text" id="applicant_address" name="applicant_address" class="form-control" placeholder="દા.ત. મુ. ખેરાલુ, તા. ખેરાલુ, જી. મહેસાણા" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span>📜 ૨. રજીસ્ટરમાં નોંધાયેલ મૂળ વિગતો</span>
+            </div>
+            <div class="form-grid form-grid-3col">
+                <div class="form-group">
+                    <label for="reg_no">નોંધણી નંબર <span class="required">*</span></label>
+                    <input type="text" id="reg_no" name="reg_no" class="form-control" placeholder="દા.ત. 845/2024" required>
+                </div>
+                <div class="form-group">
+                    <label for="dob">જન્મ તારીખ <span class="required">*</span></label>
+                    <input type="text" id="dob" name="dob" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg_date">નોંધણી તારીખ <span class="required">*</span></label>
+                    <input type="text" id="reg_date" name="reg_date" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="child_name">બાળકનું મૂળ નામ <span class="required">*</span></label>
+                    <input type="text" id="child_name" name="child_name" class="form-control" placeholder="બાળકનું રજીસ્ટર્ડ નામ" required>
+                </div>
+                <div class="form-group">
+                    <label for="father_name">પિતાનું મૂળ નામ <span class="required">*</span></label>
+                    <input type="text" id="father_name" name="father_name" class="form-control" placeholder="પિતાનું રજીસ્ટર્ડ નામ" required>
+                </div>
+            </div>
+            <div class="form-grid form-grid-3col">
+                <div class="form-group">
+                    <label for="surname">અટક <span class="required">*</span></label>
+                    <input type="text" id="surname" name="surname" class="form-control" placeholder="રજીસ્ટર્ડ અટક" required>
+                </div>
+                <div class="form-group">
+                    <label for="mother_name">માતાનું મૂળ નામ <span class="required">*</span></label>
+                    <input type="text" id="mother_name" name="mother_name" class="form-control" placeholder="માતાનું રજીસ્ટર્ડ નામ" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">મૂળ સરનામું <span class="required">*</span></label>
+                    <input type="text" id="address" name="address" class="form-control" placeholder="રજીસ્ટર્ડ સરનામું" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span>✏️ ૩. જન્મનોંધમાં સુધારો કરવાપત્ર વિગતો</span>
+            </div>
+            <div class="notice-box">
+                ℹ️ જે ખાનામાં સુધારો કરવાનો હોય ફક્ત તેજ વિગત લખો. ખાલી છોડેલ ખાનામાં દસ્તાવેજમાં સ્વયં સંચાલિત <strong>-------------------</strong> આવી જશે.
+            </div>
+            <div class="form-grid form-grid-2col">
+                <div class="form-group">
+                    <label for="corr_child_name">સુધારેલું બાળકનું નામ</label>
+                    <input type="text" id="corr_child_name" name="corr_child_name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="corr_father_name">સુધારેલું પિતાનું નામ</label>
+                    <input type="text" id="corr_father_name" name="corr_father_name" class="form-control">
+                </div>
+            </div>
+            <div class="form-grid form-grid-3col">
+                <div class="form-group">
+                    <label for="corr_surname">સુધારેલી અટક</label>
+                    <input type="text" id="corr_surname" name="corr_surname" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="corr_mother_name">સુધારેલું માતાનું નામ</label>
+                    <input type="text" id="corr_mother_name" name="corr_mother_name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="corr_address">સુધારેલું સરનામું</label>
+                    <input type="text" id="corr_address" name="corr_address" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button type="button" class="btn btn-add-batch" id="addToBatchBtn">
+                ➕ અરજી બેચમાં ઉમેરો
+            </button>
+            <button type="submit" class="btn btn-pdf" id="generateSingleBtn">
+                📄 સિંગલ PDF હુકમ ડાઉનલોડ
+            </button>
+            <button type="button" class="btn btn-docx" id="generateDocxBtn">
+                📝 સિંગલ Word (.doc) સેવ કરો
+            </button>
+            <button type="button" class="btn btn-sample" id="sampleBtn">
+                ⚡ નમૂનાની માહિતી ભરો
+            </button>
+            <button type="button" class="btn btn-secondary" id="resetBtn">
+                🔄 ફોર્મ રીસેટ
+            </button>
+        </div>
+    </form>
+
+    <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-title">
+            <span>📦 સંગ્રહિત અરજીઓ ની બેચ</span>
+            <div class="batch-counter-badge" id="batchCounter">કુલ સંગ્રહિત અરજીઓ: 0</div>
+        </div>
+
+        <div class="batch-table-container">
+            <table class="batch-table" id="batchTable">
+                <thead>
+                    <tr>
+                        <th style="width: 8%;">#</th>
+                        <th style="width: 30%;">અરજદારનું નામ</th>
+                        <th style="width: 22%;">નોંધણી ક્રમાંક</th>
+                        <th style="width: 25%;">બાળકનું નામ</th>
+                        <th style="width: 15%; text-align: center;">એક્શન</th>
+                    </tr>
+                </thead>
+                <tbody id="batchTableBody">
+                    <tr>
+                        <td colspan="5" class="empty-batch-text">અત્યાર સુધી કોઈ અરજી બેચમાં ઉમેરાયેલ નથી.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="action-bar" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-pdf" id="generateBatchPdfBtn" style="display: none;">
+                📄 કમ્બાઈન્ડ PDF હુકમ ડાઉનલોડ
+            </button>
+            <button type="button" class="btn btn-emerald" id="generateBatchDocxBtn" style="display: none;">
+                📝 કમ્બાઈન્ડ Word સેવ કરો
+            </button>
+            <button type="button" class="btn btn-secondary" id="clearBatchBtn" style="display: none;">
+                🗑️ આખી બેચ ખાલી કરો
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden PDF Container -->
+    <div id="pdf-render-area"></div>
+</div>
+
+<script>
+    let batchQueue = [];
+
+    function getTodayFormatted() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('today_date').value = getTodayFormatted();
+        document.getElementById('application_date').value = getTodayFormatted();
+        renderBatchQueue();
+    });
+
+    function getFormData() {
+        const form = document.getElementById('orderForm');
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((val, key) => data[key] = val.trim());
+        return data;
+    }
+
+    function validateForm(data) {
+        const required = ['today_date', 'application_date', 'applicant_name', 'applicant_address', 'reg_no', 'dob', 'reg_date', 'child_name', 'father_name', 'surname', 'mother_name', 'address'];
+        for (let field of required) {
+            if (!data[field] || data[field] === '') return false;
+        }
+        return true;
+    }
+
+    function getCorrVal(val) {
+        if (!val || val.trim() === '') return '-------------------';
+        return val.trim();
+    }
+
+    function buildOrderHtml(data) {
+        const c_name = getCorrVal(data.corr_child_name);
+        const c_f_name = getCorrVal(data.corr_father_name);
+        const c_sur = getCorrVal(data.corr_surname);
+        const c_m_name = getCorrVal(data.corr_mother_name);
+        const c_addr = getCorrVal(data.corr_address);
+
+        return `
+        <div style="font-family: 'Nirmala UI', 'Shruti', 'Hind Vadodara', sans-serif; font-size: 13.5px; line-height: 1.35; color: #000; padding: 10mm 15mm; background: #fff; page-break-after: always; position: relative; min-height: 270mm;">
+            <div style="text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 4px;">(૧)</div>
+            <div style="text-align: right; font-weight: bold; margin-bottom: 8px;">
+                જન્મ-મરણ શાખા<br>ખેરાલુ નગરપાલિકા<br>તા. ${data.today_date}
+            </div>
+            <div style="font-weight: bold; text-decoration: underline; font-size: 14.5px; margin: 6px 0 4px 0;">સાદરરજુ,</div>
+            <div style="text-indent: 35px; text-align: justify; font-size: 13px; margin-bottom: 10px; line-height: 1.38;">
+                જન્મ-મરણ નોધણી અધિનિયમ, ૧૯૬૯ ની કલમ(૧૫) અને ગુજરાત જન્મ અને મરણ નોધણી નિયમો ૨૦૦૪ ના નિયમ(૧૧) તથા મુખ્ય રજીસ્ટ્રાર (જન્મ-મરણ) અને કમિશ્નર શ્રી (આરોગ્ય), ગાંધીનગરના તારીખ-૨૫/૦૯/૨૦૨૪નો પરિપત્ર મુજબ અરજદારશ્રી દ્વારા જન્મની નોંધમાં સુધારો કરવા અરજી કરેલ છે. અરજદારે અરજીસાથે સામેલ રાખેલ સાધનિક પુરાવા જેવાકે L.C. આધારકાર્ડ, રેશનકાર્ડ, ચુંટણીકાર્ડ, સોગંદનામુ, ડોકટરનું પ્રમાણપત્ર, અસલજન્મ પ્રમાણપત્ર, વિગેરે જોતા નીચેની વિગતે જન્મ નીનોંધ માં સુધારો કરવાપાત્ર છે.
+            </div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 6px;">
+                <thead>
+                    <tr style="background-color: #f8fafc; font-weight: bold;">
+                        <th style="border: 1px solid #000; padding: 4px; width: 7%; text-align: center;">અ.નં</th>
+                        <th style="border: 1px solid #000; padding: 4px; width: 53%; text-align: center;" colspan="2">રજીસ્ટરમા નોધાયેલ વિગત</th>
+                        <th style="border: 1px solid #000; padding: 4px; width: 40%; text-align: center;">જન્મનોંધમાં સુધારો કરવાપત્ર વિગત</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">1</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 26%; text-align: center;">નોંધણી ક્રમાંક</td><td style="border: 1px solid #000; padding: 4px; width: 27%; text-align: center;">${data.reg_no}</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">-------------------</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">2</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">જન્મ તારીખ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.dob}</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">-------------------</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">3</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">નોંધણી તારીખ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.reg_date}</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">-------------------</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">4</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">બાળકનુ નામ<br>(ભાઈ,કુમાર,બેન)</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.child_name}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_name !== '-------------------' ? 'font-weight: bold;' : ''}">${c_name}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">5</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">પિતાનુ નામ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.father_name}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_f_name !== '-------------------' ? 'font-weight: bold;' : ''}">${c_f_name}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">6</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">અટક</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.surname}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_sur !== '-------------------' ? 'font-weight: bold;' : ''}">${c_sur}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">7</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">માતાનુ નામ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.mother_name}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_m_name !== '-------------------' ? 'font-weight: bold;' : ''}">${c_m_name}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">8</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">સરનામુ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.address}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_addr !== '-------------------' ? 'font-weight: bold;' : ''}">${c_addr}</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 100px !important; float: right; text-align: center; font-weight: bold; line-height: 1.3;">
+                ક્લાર્ક<br>જન્મ-મરણ
+            </div>
+            <div style="clear: both;"></div>
+            <div style="position: absolute; bottom: 0; right: 0; font-weight: bold;">(પાછળ) પાનં -૨</div>
+        </div>
+
+        <div style="font-family: 'Nirmala UI', 'Shruti', 'Hind Vadodara', sans-serif; font-size: 13.5px; line-height: 1.35; color: #000; padding: 10mm 15mm; background: #fff; page-break-before: always; position: relative; min-height: 270mm;">
+            <div style="text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 4px;">(૨)</div>
+            <div style="text-align: left; font-weight: bold; margin-bottom: 8px;">
+                ખેરાલુ નગરપાલિકા<br>જા.નં.<br>તા. 
+            </div>
+            <div style="font-weight: bold; text-decoration: underline; font-size: 14.5px; margin: 6px 0 4px 0;">વંચાણે લીધુ.</div>
+            <ul style="list-style: none; margin-bottom: 8px; font-size: 12.5px;">
+                <li style="margin-bottom: 2.5px;">1. અરજદાર શ્રી ${data.applicant_name} રહે. ${data.applicant_address} તા. ${data.application_date} ની અરજી તથા રજુકરેલ પુરાવા</li>
+                <li style="margin-bottom: 2.5px;">2. જન્મ-મરણ નોંધણી અધિનીયમ ૧૯૬૯ની કલમ-૧૫</li>
+                <li style="margin-bottom: 2.5px;">3. ગુજરાત જન્મ-મરણ નોધણીનિયમો ૨૦૦૪ ના નિયમ-૧૧ તથા મુખ્ય રજીસ્ટ્રાર (જન્મ-મરણ) અને કમિશ્નર શ્રી (આરોગ્ય), ગાંધીનગરના તારીખ-૨૫/૦૯/૨૦૨૪નો પરિપત્ર</li>
+                <li style="margin-bottom: 2.5px;">4. રજીસ્ટાર શ્રી (જન્મ-મરણ) અને ચીફ ઓફીસર શ્રી ખેરાલુ નગરપાલિકા કચેરી હુંકમ નં.૨૧૬૬/૨૪-૨૫ તા.૦૫/૧૨/૨૦૨૪</li>
+                <li style="margin-bottom: 2.5px;">5. જન્મ-મરણ શાખાની તા. ${data.today_date} ની નોંધ</li>
+            </ul>
+            <div style="font-weight: bold; text-decoration: underline; font-size: 14.5px; margin: 6px 0 4px 0;">કચેરી હુકમ</div>
+            <div style="text-indent: 35px; text-align: justify; font-size: 13px; margin-bottom: 10px; line-height: 1.38;">
+                વંચાણે લીધેલ આમુખ. ૧ થી અરજદાર શ્રી ${data.applicant_name}, ધ્વારા તા ${data.application_date} ની અરજી તથા સામેલ પુરાવા તેમજ વંચાણે લીધેલ આમુખ ૨ થી ૩ જન્મ-મરણ નોંધણી નિયમોની કલમ થી મળેલ સત્તાનીરૂએ વંચાણે લીધેલ આમુખ ૪ ના ચીફ ઓફીસર શ્રીના કચેરી હુકમ થી મળેલ સત્તાનીરૂએ જન્મ નોંધણી રજીસ્ટર મા નીચેમુજબ અરજદાર ના પુત્ર-પુત્રી/પૌત્ર-પૌત્રી/ભાણા-ભાણી ના જન્મની નોંધમા સુધારો કરવા હુકમ કરું છુ.
+            </div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 6px;">
+                <thead>
+                    <tr style="background-color: #f8fafc; font-weight: bold;">
+                        <th style="border: 1px solid #000; padding: 4px; width: 7%; text-align: center;">અ.નં</th>
+                        <th style="border: 1px solid #000; padding: 4px; width: 53%; text-align: center;" colspan="2">રજીસ્ટરમા નોધાયેલ વિગત</th>
+                        <th style="border: 1px solid #000; padding: 4px; width: 40%; text-align: center;">જન્મનોંધમાં સુધારો કરવાપત્ર વિગત</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">1</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; width: 26%; text-align: center;">નોંધણી ક્રમાંક</td><td style="border: 1px solid #000; padding: 4px; width: 27%; text-align: center;">${data.reg_no}</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">-------------------</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">2</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">જન્મ તારીખ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.dob}</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">-------------------</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">3</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">નોંધણી તારીખ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.reg_date}</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">-------------------</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">4</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">બાળકનુ નામ<br>(ભાઈ,કુમાર,બેન)</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.child_name}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_name !== '-------------------' ? 'font-weight: bold;' : ''}">${c_name}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">5</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">પિતાનુ નામ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.father_name}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_f_name !== '-------------------' ? 'font-weight: bold;' : ''}">${c_f_name}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">6</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">અટક</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.surname}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_sur !== '-------------------' ? 'font-weight: bold;' : ''}">${c_sur}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">7</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">માતાનુ નામ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.mother_name}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_m_name !== '-------------------' ? 'font-weight: bold;' : ''}">${c_m_name}</td></tr>
+                    <tr><td style="border: 1px solid #000; padding: 4px; text-align: center;">8</td><td style="border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center;">સરનામુ</td><td style="border: 1px solid #000; padding: 4px; text-align: center;">${data.address}</td><td style="border: 1px solid #000; padding: 4px; text-align: center; ${c_addr !== '-------------------' ? 'font-weight: bold;' : ''}">${c_addr}</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 100px !important; float: right; text-align: center; font-weight: bold; line-height: 1.3;">
+                સબરજીસ્ટાર<br>જન્મ-મરણ નોધણી<br>ખેરાલુ નગરપાલિકા
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        `;
+    }
+
+    function renderBatchQueue() {
+        const counter = document.getElementById('batchCounter');
+        const tbody = document.getElementById('batchTableBody');
+        const pdfBtn = document.getElementById('generateBatchPdfBtn');
+        const docxBtn = document.getElementById('generateBatchDocxBtn');
+        const clearBtn = document.getElementById('clearBatchBtn');
+
+        counter.innerHTML = `કુલ સંગ્રહિત અરજીઓ: ${batchQueue.length}`;
+
+        if (batchQueue.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="empty-batch-text">અત્યાર સુધી કોઈ અરજી બેચમાં ઉમેરાયેલ નથી.</td></tr>`;
+            pdfBtn.style.display = 'none';
+            docxBtn.style.display = 'none';
+            clearBtn.style.display = 'none';
+            return;
+        }
+
+        pdfBtn.style.display = 'inline-flex';
+        docxBtn.style.display = 'inline-flex';
+        clearBtn.style.display = 'inline-flex';
+
+        let html = '';
+        batchQueue.forEach((item, index) => {
+            html += `
+                <tr>
+                    <td style="font-weight: bold;">${index + 1}</td>
+                    <td>${item.applicant_name}</td>
+                    <td>${item.reg_no}</td>
+                    <td>${item.child_name}</td>
+                    <td style="text-align: center;">
+                        <button type="button" class="btn btn-edit" onclick="editBatchItem(${index})">✏️ Edit</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteBatchItem(${index})">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    document.getElementById('addToBatchBtn').addEventListener('click', () => {
+        const data = getFormData();
+        if (!validateForm(data)) {
+            alert("કૃપા કરીને તમામ લાલ તારા (*) વાળા ફરજિયાત ખાના ભરો.");
+            return;
+        }
+
+        const editIndex = parseInt(document.getElementById('editing_index').value);
+        if (editIndex >= 0 && editIndex < batchQueue.length) {
+            batchQueue[editIndex] = data;
+            document.getElementById('editing_index').value = "-1";
+            alert(`અરજી #${editIndex + 1} અપડેટ થઈ ગઈ છે!`);
+        } else {
+            batchQueue.push(data);
+            alert(`અરજી #${batchQueue.length} બેચમાં ઉમેરાઈ ગઈ છે!`);
+        }
+        renderBatchQueue();
+    });
+
+    window.editBatchItem = function(index) {
+        const item = batchQueue[index];
+        if (!item) return;
+
+        for (let key in item) {
+            const el = document.getElementById(key);
+            if (el) el.value = item[key];
+        }
+        document.getElementById('editing_index').value = index;
+    };
+
+    window.deleteBatchItem = function(index) {
+        if (confirm(`અરજી #${index + 1} કાઢી નાખવી છે?`)) {
+            batchQueue.splice(index, 1);
+            renderBatchQueue();
+        }
+    };
+
+    document.getElementById('clearBatchBtn').addEventListener('click', () => {
+        if (confirm("આખી બેચ ખાલી કરવી છે?")) {
+            batchQueue = [];
+            renderBatchQueue();
+        }
+    });
+
+    document.getElementById('sampleBtn').addEventListener('click', () => {
+        document.getElementById('today_date').value = getTodayFormatted();
+        document.getElementById('application_date').value = "02/08/2026";
+        document.getElementById('applicant_name').value = "ચૌધરી રમેશભાઈ વિષ્ણુભાઈ";
+        document.getElementById('applicant_address').value = "મુ. ખેરાલુ, તા. ખેરાલુ, જી. મહેસાણા";
+        document.getElementById('reg_no').value = "845/2024";
+        document.getElementById('dob').value = "12/04/2024";
+        document.getElementById('reg_date').value = "18/04/2024";
+        document.getElementById('child_name').value = "દિયા";
+        document.getElementById('father_name').value = "રમેશભાઈ";
+        document.getElementById('surname').value = "ચૌધરી";
+        document.getElementById('mother_name').value = "કવિતાબેન";
+        document.getElementById('address').value = "ખેરાલુ";
+        
+        document.getElementById('corr_child_name').value = "દિયાબેન";
+        document.getElementById('corr_father_name').value = "રમેશકુમાર";
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        document.getElementById('orderForm').reset();
+        document.getElementById('today_date').value = getTodayFormatted();
+        document.getElementById('application_date').value = getTodayFormatted();
+    });
+
+    // Native File Saver Function for Android / Browser
+    function saveFile(base64Data, filename, mimeType) {
+        if (window.AndroidInterface && typeof window.AndroidInterface.downloadFile === 'function') {
+            window.AndroidInterface.downloadFile(base64Data, filename, mimeType);
+        } else {
+            const a = document.createElement('a');
+            a.href = base64Data;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }
+
+    // Generate Single PDF
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = getFormData();
+        if (!validateForm(data)) return;
+
+        const btn = document.getElementById('generateSingleBtn');
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = "⏳ PDF તૈયાર થઈ રહ્યું છે...";
+
+        const renderContainer = document.getElementById('pdf-render-area');
+        renderContainer.innerHTML = buildOrderHtml(data);
+
+        const filename = `Sudhara_Hukam_${data.reg_no.replace(/[/\\:\*\?"<>\| ]/g, '_')}.pdf`;
+        const opt = {
+            margin: [8, 12, 8, 12],
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(renderContainer).outputPdf('datauristring').then(function(pdfDataUri) {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+            saveFile(pdfDataUri, filename, 'application/pdf');
+        }).catch(function(err) {
+            console.error(err);
+            btn.disabled = false;
+            btn.innerHTML = origText;
+            window.print();
+        });
+    });
+
+    // Generate Single Word (.doc) File
+    function exportWordDocument(htmlContent, filename) {
+        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Order</title></head><body>";
+        const footer = "</body></html>";
+        const sourceHTML = header + htmlContent + footer;
+        
+        const base64Data = "data:application/msword;base64," + btoa(unescape(encodeURIComponent('\ufeff' + sourceHTML)));
+        saveFile(base64Data, filename, 'application/msword');
+    }
+
+    document.getElementById('generateDocxBtn').addEventListener('click', () => {
+        const data = getFormData();
+        if (!validateForm(data)) {
+            alert("તમામ ફરજિયાત ખાના ભરો.");
+            return;
+        }
+        const html = buildOrderHtml(data);
+        const filename = `Sudhara_Hukam_${data.reg_no.replace(/[/\\:\*\?"<>\| ]/g, '_')}.doc`;
+        exportWordDocument(html, filename);
+    });
+
+    // Generate Batch Combined PDF
+    document.getElementById('generateBatchPdfBtn').addEventListener('click', () => {
+        if (batchQueue.length === 0) return;
+
+        const btn = document.getElementById('generateBatchPdfBtn');
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = "⏳ કમ્બાઈન્ડ PDF તૈયાર થઈ રહ્યું છે...";
+
+        let combinedHtml = '';
+        batchQueue.forEach(item => combinedHtml += buildOrderHtml(item));
+
+        const renderContainer = document.getElementById('pdf-render-area');
+        renderContainer.innerHTML = combinedHtml;
+
+        const filename = `Combined_Sudhara_Hukam_Batch_${batchQueue.length}.pdf`;
+        const opt = {
+            margin: [8, 12, 8, 12],
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(renderContainer).outputPdf('datauristring').then(function(pdfDataUri) {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+            saveFile(pdfDataUri, filename, 'application/pdf');
+        }).catch(function(err) {
+            console.error(err);
+            btn.disabled = false;
+            btn.innerHTML = origText;
+            window.print();
+        });
+    });
+
+    // Generate Batch Combined Word File
+    document.getElementById('generateBatchDocxBtn').addEventListener('click', () => {
+        if (batchQueue.length === 0) return;
+        let combinedHtml = '';
+        batchQueue.forEach(item => combinedHtml += buildOrderHtml(item));
+        exportWordDocument(combinedHtml, `Combined_Sudhara_Hukam_Batch_${batchQueue.length}.doc`);
+    });
+</script>
+
+</body>
+</html>

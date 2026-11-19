@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Local Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# PyInstaller & Build artifacts
+build/
+dist/
+*.spec
+*.exe
+*.apk
+*.manifest
+
+# Application generated files & test outputs
+generated_docs/*
+!generated_docs/.gitkeep
+test_out.pdf
+
+# Android temporary build files
+.gradle/
+android_app/.gradle/
+android_app/.kotlin/
+android_app/build/
+android_app/**/build/
+android_app/local.properties
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+.vercel/
