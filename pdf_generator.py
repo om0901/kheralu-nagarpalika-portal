@@ -175,3 +175,87 @@ def merge_pdf_files(pdf_filepath_list, output_combined_pdf_path):
     combined_pdf.save(output_combined_pdf_path)
     combined_pdf.close()
     return output_combined_pdf_path
+
+def generate_pdf_bytes(data):
+    """
+    Generates exact 2-page PDF document directly as an in-memory BytesIO stream.
+    Cleans up any temporary intermediate files immediately within the same request.
+    """
+    import io
+    import uuid
+    import tempfile
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    html_template_path = os.path.join(base_dir, "templates", "order_print_template.html")
+
+    if not os.path.exists(html_template_path):
+        return None
+
+    temp_dir = tempfile.gettempdir()
+    unique_suffix = uuid.uuid4().hex[:8]
+    temp_html_path = os.path.join(temp_dir, f"order_{unique_suffix}.html")
+    temp_pdf_path = os.path.join(temp_dir, f"order_{unique_suffix}.pdf")
+    temp_docx_path = os.path.join(temp_dir, f"order_{unique_suffix}.docx")
+
+    try:
+        # 1. Primary Strategy: HTML to PDF via Headless Browser
+        rendered_html = render_html_template(data, html_template_path)
+        with open(temp_html_path, "w", encoding="utf-8") as f:
+            f.write(rendered_html)
+
+        pdf_success = convert_html_to_pdf_edge(temp_html_path, temp_pdf_path)
+
+        # 2. Secondary Strategy: Word COM (Windows only)
+        if not pdf_success and HAS_WIN32COM:
+            generate_kheralu_order_docx(data, temp_docx_path)
+            pdf_success = convert_docx_to_pdf_word(temp_docx_path, temp_pdf_path)
+
+        if pdf_success and os.path.exists(temp_pdf_path) and os.path.getsize(temp_pdf_path) > 0:
+            with open(temp_pdf_path, "rb") as f:
+                pdf_bytes = f.read()
+            buf = io.BytesIO(pdf_bytes)
+            buf.seek(0)
+            return buf
+
+        return None
+    finally:
+        for p in [temp_html_path, temp_pdf_path, temp_docx_path]:
+            if os.path.exists(p):
+                try:
+                    os.remove(p)
+                except Exception:
+                    pass
+
+def generate_batch_pdf_bytes(batch_list):
+    """
+    Generates a single combined PDF document for the entire batch directly as an in-memory BytesIO stream.
+    """
+    import io
+    combined_pdf = pypdfium2.PdfDocument.new()
+    opened_docs = []
+
+    try:
+        for item in batch_list:
+            single_buf = generate_pdf_bytes(item)
+            if single_buf:
+                src_doc = pypdfium2.PdfDocument(single_buf.getvalue())
+                opened_docs.append(src_doc)
+                combined_pdf.import_pages(src_doc)
+
+        if len(combined_pdf) == 0:
+            return None
+
+        buf = io.BytesIO()
+        combined_pdf.save(buf)
+        buf.seek(0)
+        return buf
+    finally:
+        for d in opened_docs:
+            try:
+                d.close()
+            except Exception:
+                pass
+        try:
+            combined_pdf.close()
+        except Exception:
+            pass

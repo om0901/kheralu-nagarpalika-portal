@@ -599,10 +599,7 @@
 
 <script>
     let batchQueue = [];
-    let currentPdfUrl = "";
-    let currentPdfFilename = "";
-    let currentDocxUrl = "";
-    let currentDocxFilename = "";
+    let lastContext = { type: 'single', data: null };
 
     function getTodayFormatted() {
         const today = new Date();
@@ -618,23 +615,52 @@
         renderBatchQueue();
     });
 
-    async function triggerSaveAsDialog(url, defaultFilename) {
-        if (!url || url === '' || url === '#') return;
+    async function downloadFileStream(endpoint, payload, defaultFilename) {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
+        if (!response.ok) {
+            let errMessage = "દસ્તાવેજ ડાઉનલોડ કરવામાં ક્ષતિ આવી.";
+            try {
+                const errJson = await response.json();
+                if (errJson && errJson.message) {
+                    errMessage = errJson.message;
+                }
+            } catch (_) {}
+            throw new Error(errMessage);
+        }
+
+        // Parse UTF-8 Gujarati or ASCII filename from Content-Disposition header
+        let filename = defaultFilename;
+        const disposition = response.headers.get('Content-Disposition');
+        if (disposition) {
+            const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+            if (utf8Match && utf8Match[1]) {
+                filename = decodeURIComponent(utf8Match[1].trim());
+            } else {
+                const standardMatch = disposition.match(/filename="?([^";]+)"?/i);
+                if (standardMatch && standardMatch[1]) {
+                    filename = standardMatch[1].trim();
+                }
+            }
+        }
+
+        const blob = await response.blob();
+
+        // Check if modern showSaveFilePicker is available
         if ('showSaveFilePicker' in window) {
             try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Fetch error");
-                const blob = await response.blob();
-
-                const isPdf = defaultFilename.toLowerCase().endsWith('.pdf');
+                const isPdf = filename.toLowerCase().endsWith('.pdf');
                 const mimeType = isPdf ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
                 const extension = isPdf ? '.pdf' : '.docx';
 
                 const handle = await window.showSaveFilePicker({
-                    suggestedName: defaultFilename,
+                    suggestedName: filename,
                     types: [{
-                        description: isPdf ? 'PDF Document (*.pdf)' : 'Word Document (*.docx)',
+                        description: isPdf ? 'PDF દસ્તાવેજ (*.pdf)' : 'Word દસ્તાવેજ (*.docx)',
                         accept: { [mimeType]: [extension] }
                     }]
                 });
@@ -642,27 +668,66 @@
                 const writable = await handle.createWritable();
                 await writable.write(blob);
                 await writable.close();
-                return;
-            } catch (err) {
-                if (err.name === 'AbortError') return;
-                console.warn("showSaveFilePicker fallback:", err);
+                return filename;
+            } catch (pickerErr) {
+                if (pickerErr.name === 'AbortError') return filename;
+                console.warn("showSaveFilePicker fallback:", pickerErr);
             }
         }
 
+        // Fallback: Immediate browser download via Object URL
+        const objectUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = defaultFilename;
+        a.href = objectUrl;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(objectUrl);
+        }, 2000);
+
+        return filename;
     }
 
-    document.getElementById('pdfDownloadBtn').addEventListener('click', () => {
-        triggerSaveAsDialog(currentPdfUrl, currentPdfFilename);
+    document.getElementById('pdfDownloadBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('pdfDownloadBtn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = "⏳ PDF ડાઉનલોડ થાય છે...";
+        try {
+            if (lastContext.type === 'batch' && lastContext.data && lastContext.data.length > 0) {
+                await downloadFileStream('/api/generate_batch?format=pdf', { batch: lastContext.data }, `Combined_Sudhara_Hukam_Batch_${lastContext.data.length}.pdf`);
+            } else {
+                const data = lastContext.data || getFormData();
+                await downloadFileStream('/api/generate?format=pdf', data, `Sudhara_Hukam_${data.reg_no || 'Order'}.pdf`);
+            }
+        } catch (err) {
+            alert("ભૂલ: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     });
 
-    document.getElementById('docxDownloadBtn').addEventListener('click', () => {
-        triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
+    document.getElementById('docxDownloadBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('docxDownloadBtn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = "⏳ Word ડાઉનલોડ થાય છે...";
+        try {
+            if (lastContext.type === 'batch' && lastContext.data && lastContext.data.length > 0) {
+                await downloadFileStream('/api/generate_batch?format=docx', { batch: lastContext.data }, `Combined_Sudhara_Hukam_Batch_${lastContext.data.length}.docx`);
+            } else {
+                const data = lastContext.data || getFormData();
+                await downloadFileStream('/api/generate?format=docx', data, `Sudhara_Hukam_${data.reg_no || 'Order'}.docx`);
+            }
+        } catch (err) {
+            alert("ભૂલ: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     });
 
     function getFormData() {
@@ -817,102 +882,73 @@
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const generateBtn = document.getElementById('generateSingleBtn');
-        const originalText = generateBtn.innerHTML;
-        generateBtn.disabled = true;
-        generateBtn.innerHTML = "⏳ સિંગલ PDF તૈયાર થાય છે...";
-        
-        const data = getFormData();
-
-        try {
-            const response = await fetch('/api/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                document.getElementById('resultTitle').innerHTML = "✅ સિંગલ હુકમ દસ્તાવેજ સફળતાપૂર્વક તૈયાર થઈ ગયો છે!";
-                document.getElementById('resultSubtitle').innerHTML = "તમારા દસ્તાવેજને સેવ કરવા માટે નીચેના બટન પર ક્લિક કરો:";
-                
-                const resultCard = document.getElementById('result-card');
-                const docxBtn = document.getElementById('docxDownloadBtn');
-                const pdfBtn = document.getElementById('pdfDownloadBtn');
-                
-                currentDocxUrl = result.docx_download_url;
-                currentDocxFilename = result.docx_filename;
-                
-                if (result.pdf_download_url) {
-                    currentPdfUrl = result.pdf_download_url;
-                    currentPdfFilename = result.pdf_filename;
-                    pdfBtn.style.display = 'inline-flex';
-                } else {
-                    currentPdfUrl = "";
-                    currentPdfFilename = "";
-                    pdfBtn.style.display = 'none';
-                }
-                
-                resultCard.style.display = 'block';
-                resultCard.scrollIntoView({ behavior: 'smooth' });
-
-                if (currentPdfUrl) {
-                    triggerSaveAsDialog(currentPdfUrl, currentPdfFilename);
-                } else {
-                    triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
-                }
-            } else {
-                alert("ભૂલ: " + (result.message || "દસ્તાવેજ જનરેટ કરી શકાયો નથી."));
-            }
-        } catch (err) {
-            console.error(err);
-            alert("ક્ષતિ થઈ.");
-        } finally {
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = originalText;
-        }
-    });
-
-    // Single Word Download Button Event
-    document.getElementById('generateSingleDocxBtn').addEventListener('click', async () => {
         const data = getFormData();
         if (!validateForm(data)) {
             alert("કૃપા કરીને તમામ લાલ તારા (*) વાળા ફરજિયાત ખાના ભરો.");
             return;
         }
-        
-        const generateBtn = document.getElementById('generateSingleDocxBtn');
+
+        lastContext = { type: 'single', data: { ...data } };
+        const generateBtn = document.getElementById('generateSingleBtn');
         const originalText = generateBtn.innerHTML;
         generateBtn.disabled = true;
-        generateBtn.innerHTML = "⏳ સિંગલ Word તૈયાર થાય છે...";
+        generateBtn.innerHTML = "⏳ સિંગલ PDF ડાઉનલોડ થાય છે...";
 
         try {
-            const response = await fetch('/api/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
+            const downloadedName = await downloadFileStream('/api/generate?format=pdf', data, `Sudhara_Hukam_${data.reg_no || 'Order'}.pdf`);
+            document.getElementById('resultTitle').innerHTML = "✅ સિંગલ PDF હુકમ સફળતાપૂર્વક ડાઉનલોડ થઈ ગયો છે!";
+            document.getElementById('resultSubtitle').innerHTML = `ફાઈલ <strong>${downloadedName}</strong> તમારા બ્રાઉઝરમાં સેવ થઈ ગઈ છે. ફરીથી અથવા Word ફોર્મેટ માટે નીચે ક્લિક કરો:`;
             
-            const result = await response.json();
-            if (result.status === 'success') {
-                currentDocxUrl = result.docx_download_url;
-                currentDocxFilename = result.docx_filename;
-                
-                const resultCard = document.getElementById('result-card');
-                resultCard.style.display = 'block';
-                resultCard.scrollIntoView({ behavior: 'smooth' });
-                
-                triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
-            }
+            const resultCard = document.getElementById('result-card');
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
         } catch (err) {
             console.error(err);
-            alert("ક્ષતિ થઈ.");
+            if (err.message && (err.message.includes("PDF") || err.message.includes("કન્વર્ઝન"))) {
+                if (confirm(err.message + "\n\nશું તમે Word (.docx) ફાઇલ ડાઉનલોડ કરવા માંગો છો?")) {
+                    await downloadSingleDocx();
+                }
+            } else {
+                alert("ભૂલ: " + err.message);
+            }
         } finally {
             generateBtn.disabled = false;
             generateBtn.innerHTML = originalText;
         }
     });
+
+    // Single Word Download Handler
+    async function downloadSingleDocx() {
+        const data = (lastContext.type === 'single' && lastContext.data) ? lastContext.data : getFormData();
+        if (!validateForm(data)) {
+            alert("કૃપા કરીને તમામ લાલ તારા (*) વાળા ફરજિયાત ખાના ભરો.");
+            return;
+        }
+
+        lastContext = { type: 'single', data: { ...data } };
+        const generateBtn = document.getElementById('generateSingleDocxBtn');
+        const originalText = generateBtn.innerHTML;
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = "⏳ સિંગલ Word ડાઉનલોડ થાય છે...";
+
+        try {
+            const downloadedName = await downloadFileStream('/api/generate?format=docx', data, `Sudhara_Hukam_${data.reg_no || 'Order'}.docx`);
+            document.getElementById('resultTitle').innerHTML = "✅ સિંગલ Word હુકમ સફળતાપૂર્વક ડાઉનલોડ થઈ ગયો છે!";
+            document.getElementById('resultSubtitle').innerHTML = `ફાઈલ <strong>${downloadedName}</strong> તમારા બ્રાઉઝરમાં સેવ થઈ ગઈ છે. ફરીથી અથવા PDF ફોર્મેટ માટે નીચે ક્લિક કરો:`;
+            
+            const resultCard = document.getElementById('result-card');
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        } catch (err) {
+            console.error(err);
+            alert("ભૂલ: " + err.message);
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = originalText;
+        }
+    }
+
+    document.getElementById('generateSingleDocxBtn').addEventListener('click', downloadSingleDocx);
 
     // Batch PDF Generation
     document.getElementById('generateBatchPdfBtn').addEventListener('click', async () => {
@@ -921,111 +957,66 @@
             return;
         }
 
+        lastContext = { type: 'batch', data: [...batchQueue] };
         const pdfBtn = document.getElementById('generateBatchPdfBtn');
         const originalText = pdfBtn.innerHTML;
         pdfBtn.disabled = true;
-        pdfBtn.innerHTML = "⏳ કમ્બાઈન્ડ PDF મર્જ થઈ રહ્યું છે...";
+        pdfBtn.innerHTML = "⏳ કમ્બાઈન્ડ PDF મર્જ અને ડાઉનલોડ થાય છે...";
 
         try {
-            const response = await fetch('/api/generate_batch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ batch: batchQueue })
-            });
+            const downloadedName = await downloadFileStream('/api/generate_batch?format=pdf', { batch: batchQueue }, `Combined_Sudhara_Hukam_Batch_${batchQueue.length}.pdf`);
+            document.getElementById('resultTitle').innerHTML = `✅ ${batchQueue.length} અરજીઓની કમ્બાઈન્ડ PDF સફળતાપૂર્વક ડાઉનલોડ થઈ ગઈ છે!`;
+            document.getElementById('resultSubtitle').innerHTML = `ફાઈલ <strong>${downloadedName}</strong> તમારા બ્રાઉઝરમાં સેવ થઈ ગઈ છે.`;
 
-            const result = await response.json();
-            if (result.status === 'success') {
-                document.getElementById('resultTitle').innerHTML = `✅ ${result.batch_count} અરજીઓની ગ્રાન્ડ કમ્બાઈન્ડ ફાઈલ તૈયાર થઈ ગઈ છે!`;
-                document.getElementById('resultSubtitle').innerHTML = `કુલ ${result.batch_count} અરજીઓ (${result.batch_count * 2} પાના) સેવ કરવા નીચે બટન દબાવો:`;
-
-                const resultCard = document.getElementById('result-card');
-                const docxBtn = document.getElementById('docxDownloadBtn');
-                const pdfBtnEl = document.getElementById('pdfDownloadBtn');
-
-                currentDocxUrl = result.combined_docx_download_url;
-                currentDocxFilename = result.combined_docx_filename;
-
-                if (result.combined_pdf_download_url) {
-                    currentPdfUrl = result.combined_pdf_download_url;
-                    currentPdfFilename = result.combined_pdf_filename;
-                    pdfBtnEl.style.display = 'inline-flex';
-                    triggerSaveAsDialog(currentPdfUrl, currentPdfFilename);
-                } else {
-                    currentPdfUrl = "";
-                    currentPdfFilename = "";
-                    pdfBtnEl.style.display = 'none';
-                    triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
-                }
-
-                resultCard.style.display = 'block';
-                resultCard.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                alert("ભૂલ: " + (result.message || "કમ્બાઈન્ડ ફાઈલ જનરેટ કરી શકાઈ નથી."));
-            }
+            const resultCard = document.getElementById('result-card');
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
         } catch (err) {
             console.error(err);
-            alert("ક્ષતિ થઈ.");
+            if (err.message && (err.message.includes("PDF") || err.message.includes("કન્વર્ઝન"))) {
+                if (confirm(err.message + "\n\nશું તમે કમ્બાઈન્ડ Word (.docx) ફાઇલ ડાઉનલોડ કરવા માંગો છો?")) {
+                    await downloadBatchDocx();
+                }
+            } else {
+                alert("ભૂલ: " + err.message);
+            }
         } finally {
             pdfBtn.disabled = false;
             pdfBtn.innerHTML = originalText;
         }
     });
 
-    // Batch Word Generation
-    document.getElementById('generateBatchDocxBtn').addEventListener('click', async () => {
+    // Batch Word Generation Handler
+    async function downloadBatchDocx() {
         if (batchQueue.length === 0) {
             alert("બેચમાં કોઈ અરજી નથી.");
             return;
         }
 
+        lastContext = { type: 'batch', data: [...batchQueue] };
         const docxBtn = document.getElementById('generateBatchDocxBtn');
         const originalText = docxBtn.innerHTML;
         docxBtn.disabled = true;
-        docxBtn.innerHTML = "⏳ કમ્બાઈન્ડ Word મર્જ થઈ રહ્યું છે...";
+        docxBtn.innerHTML = "⏳ કમ્બાઈન્ડ Word ડાઉનલોડ થાય છે...";
 
         try {
-            const response = await fetch('/api/generate_batch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ batch: batchQueue })
-            });
+            const downloadedName = await downloadFileStream('/api/generate_batch?format=docx', { batch: batchQueue }, `Combined_Sudhara_Hukam_Batch_${batchQueue.length}.docx`);
+            document.getElementById('resultTitle').innerHTML = `✅ ${batchQueue.length} અરજીઓની કમ્બાઈન્ડ Word ફાઈલ સફળતાપૂર્વક ડાઉનલોડ થઈ ગઈ છે!`;
+            document.getElementById('resultSubtitle').innerHTML = `ફાઈલ <strong>${downloadedName}</strong> તમારા બ્રાઉઝરમાં સેવ થઈ ગઈ છે.`;
 
-            const result = await response.json();
-            if (result.status === 'success') {
-                document.getElementById('resultTitle').innerHTML = `✅ ${result.batch_count} અરજીઓ ની ગ્રાન્ડ કમ્બાઈન્ડ વર્ડ ફાઈલ તૈયાર છે!`;
-                document.getElementById('resultSubtitle').innerHTML = `કુલ ${result.batch_count} અરજીઓ સેવ કરવા માટે નીચેના બટન પર ક્લિક કરો:`;
-
-                const resultCard = document.getElementById('result-card');
-                const docxBtnEl = document.getElementById('docxDownloadBtn');
-                const pdfBtnEl = document.getElementById('pdfDownloadBtn');
-
-                currentDocxUrl = result.combined_docx_download_url;
-                currentDocxFilename = result.combined_docx_filename;
-
-                if (result.combined_pdf_download_url) {
-                    currentPdfUrl = result.combined_pdf_download_url;
-                    currentPdfFilename = result.combined_pdf_filename;
-                    pdfBtnEl.style.display = 'inline-flex';
-                } else {
-                    currentPdfUrl = "";
-                    currentPdfFilename = "";
-                    pdfBtnEl.style.display = 'none';
-                }
-
-                resultCard.style.display = 'block';
-                resultCard.scrollIntoView({ behavior: 'smooth' });
-                triggerSaveAsDialog(currentDocxUrl, currentDocxFilename);
-            } else {
-                alert("ભૂલ: " + (result.message || "કમ્બાઈન્ડ વર્ડ ફાઈલ જનરેટ કરી શકાઈ નથી."));
-            }
+            const resultCard = document.getElementById('result-card');
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
         } catch (err) {
             console.error(err);
-            alert("ક્ષતિ થઈ.");
+            alert("ભૂલ: " + err.message);
         } finally {
             docxBtn.disabled = false;
             docxBtn.innerHTML = originalText;
         }
-    });
+    }
+
+    document.getElementById('generateBatchDocxBtn').addEventListener('click', downloadBatchDocx);
 </script>
 
 </body>

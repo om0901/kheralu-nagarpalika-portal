@@ -226,6 +226,7 @@ def render_order_to_document(doc, data):
 def generate_kheralu_order_docx(data, output_filepath):
     """
     Generates single 2-page Birth Registration Correction Order document.
+    output_filepath can be a file path string or a file-like object (io.BytesIO).
     """
     doc = Document()
     for section in doc.sections:
@@ -238,9 +239,20 @@ def generate_kheralu_order_docx(data, output_filepath):
     doc.save(output_filepath)
     return output_filepath
 
+def generate_kheralu_order_docx_bytes(data):
+    """
+    Generates single 2-page Word document directly into an in-memory BytesIO stream.
+    """
+    import io
+    buf = io.BytesIO()
+    generate_kheralu_order_docx(data, buf)
+    buf.seek(0)
+    return buf
+
 def generate_batch_docx(batch_list, output_filepath):
     """
     Generates a single combined Word (.docx) file containing multiple 2-page applications consecutively.
+    output_filepath can be a file path string or a file-like object (io.BytesIO).
     """
     doc = Document()
     for section in doc.sections:
@@ -256,6 +268,16 @@ def generate_batch_docx(batch_list, output_filepath):
 
     doc.save(output_filepath)
     return output_filepath
+
+def generate_batch_docx_bytes(batch_list):
+    """
+    Generates a combined Word document directly into an in-memory BytesIO stream.
+    """
+    import io
+    buf = io.BytesIO()
+    generate_batch_docx(batch_list, buf)
+    buf.seek(0)
+    return buf
 
 if __name__ == "__main__":
     sample_data = {
