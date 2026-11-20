@@ -167,7 +167,7 @@ def render_order_to_document(doc, data):
     add_styled_paragraph(doc, "જન્મ-મરણ શાખા", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_after=1)
     add_styled_paragraph(doc, "ખેરાલુ નગરપાલિકા", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_after=1)
     add_styled_paragraph(doc, f"તા. {today_date}", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_after=6)
-    add_styled_paragraph(doc, "સાદરરજુ,", font_size=10.5, bold=True, underline=True, align=WD_ALIGN_PARAGRAPH.LEFT, space_before=2, space_after=4)
+    add_styled_paragraph(doc, "સાદરરજુ.", font_size=10.5, bold=True, underline=True, align=WD_ALIGN_PARAGRAPH.LEFT, space_before=2, space_after=4)
 
     p1_body_text = (
         "જન્મ-મરણ નોધણી અધિનિયમ, ૧૯૬૯ ની કલમ(૧૫) અને ગુજરાત જન્મ અને મરણ નોધણી નિયમો ૨૦૦૪ ના નિયમ(૧૧) "
@@ -183,7 +183,7 @@ def render_order_to_document(doc, data):
     add_styled_paragraph(doc, "ક્લાર્ક", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_before=75, space_after=1)
     add_styled_paragraph(doc, "જન્મ-મરણ", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_after=0)
 
-    add_styled_paragraph(doc, "(પાછળ) પાનં -૨", font_size=9.5, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_before=60, space_after=0)
+    add_styled_paragraph(doc, "(પાછળ) પાનાં નં - ૨", font_size=9.5, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_before=60, space_after=0)
 
     # PAGE BREAK TO PAGE 2
     doc.add_page_break()
@@ -200,7 +200,7 @@ def render_order_to_document(doc, data):
         f"1. અરજદાર શ્રી {app_name} રહે. {app_addr} તા. {app_date} ની અરજી તથા રજુકરેલ પુરાવા",
         "2. જન્મ-મરણ નોંધણી અધિનીયમ ૧૯૬૯ની કલમ-૧૫",
         "3. ગુજરાત જન્મ-મરણ નોધણીનિયમો ૨૦૦૪ ના નિયમ-૧૧ તથા મુખ્ય રજીસ્ટ્રાર (જન્મ-મરણ) અને કમિશ્નર શ્રી (આરોગ્ય), ગાંધીનગરના તારીખ-૨૫/૦૯/૨૦૨૪નો પરિપત્ર",
-        "4. રજીસ્ટાર શ્રી (જન્મ-મરણ) અને ચીફ ઓફીસર શ્રી ખેરાલુ નગરપાલિકા કચેરી હુંકમ નં.૨૧૬૬/૨૪-૨૫ તા.૦૫/૧૨/૨૦૨૪",
+        "4. રજીસ્ટ્રાર શ્રી (જન્મ-મરણ) અને ચીફ ઓફીસર શ્રી ખેરાલુ નગરપાલિકા કચેરી હુંકમ નં.૨૧૬૬/૨૪-૨૫ તા.૦૫/૧૨/૨૦૨૪",
         f"5. જન્મ-મરણ શાખાની તા. {today_date} ની નોંધ"
     ]
     
@@ -219,8 +219,8 @@ def render_order_to_document(doc, data):
 
     build_exact_4col_table(doc, data)
 
-    add_styled_paragraph(doc, "સબરજીસ્ટાર", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_before=75, space_after=1)
-    add_styled_paragraph(doc, "જન્મ-મરણ નોધણી", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_after=1)
+    add_styled_paragraph(doc, "સબરજીસ્ટ્રાર", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_before=75, space_after=1)
+    add_styled_paragraph(doc, "જન્મ-મરણ નોંધણી", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_after=1)
     add_styled_paragraph(doc, "ખેરાલુ નગરપાલિકા", font_size=10, bold=True, align=WD_ALIGN_PARAGRAPH.RIGHT, space_after=0)
 
 def generate_kheralu_order_docx(data, output_filepath):
